@@ -321,7 +321,7 @@ class FortranMagics(Magics):
         # a nonsense verbosity=5.
         # To override: if verbosity is given for the magic cell
         # we ignore the saved config.
-        if '-v' in line:
+        if _has_verbosity(line_args):
             self.fortran.parser.set_defaults(verbosity=0)
 
         args = self.fortran.parser.parse_args(line_args)
@@ -410,3 +410,11 @@ def load_ipython_extension(ip):
                             lib=["https://raw.github.com/marijnh/CodeMirror/master/mode/"
                                  "fortran/fortran.js"])
     display.display_javascript(js)
+
+
+def _has_verbosity(line_args):
+    for arg in line_args:
+        if arg.startswith('-v') and arg.rstrip('v') == '-':
+            return True
+
+    return False
