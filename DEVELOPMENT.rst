@@ -24,16 +24,17 @@ if a breakpoint is set via
 .. code-block:: diff
 
    diff --git a/fortranmagic.py b/fortranmagic.py
-   index ac73fd6..ac804b1 100644
+   index 12b6e25..987defc 100644
    --- a/fortranmagic.py
    +++ b/fortranmagic.py
-   @@ -332,6 +332,7 @@ class FortranMagics(Magics):
-                # py3
-                base_str_class = str
+   @@ -343,6 +343,7 @@ class FortranMagics(Magics):
+                    kw.append('--%s=%s' % (k, ' '.join(v)))
 
+            f2py_args.extend(kw)
    +        breakpoint()
-            kw = ['--%s=%s' % (k, v) for k, v in vars(args).items()
-                  if isinstance(v, base_str_class)]
+
+            # link resource
+            if args.link:
 
 then in the test environment invoke ``.venv/bin/ipython``
 
@@ -41,7 +42,7 @@ then in the test environment invoke ``.venv/bin/ipython``
 
    In [1]: %load_ext fortranmagic
 
-   In [2]: %%fortran --f90flags="-march=native"
+   In [2]: %%fortran --f90flags="-Wall -Wextra" --f90flags="-march=native -Werror"
       ...:
       ...: subroutine f(x, y, z)
       ...:
@@ -53,12 +54,16 @@ then in the test environment invoke ``.venv/bin/ipython``
       ...: end subroutine f
       ...:
       ...:
-   > ${HERE}/fortran_magic/fortranmagic.py(336)fortran()
-   -> kw = ['--%s=%s' % (k, v) for k, v in vars(args).items()
-   (Pdb) pp args
-   Namespace(arch=None, compiler=None, debug=False, extra=[], f77flags=None, f90flags='"-march=native"', fcompiler=None, link=[], noarch=False, noopt=False, opt=None, verbosity=0)
+   > ${HERE}/fortranmagic.py(349)fortran()
+   -> if args.link:
    (Pdb) pp line
-   '--f90flags="-march=native"'
+   '--f90flags="-Wall -Wextra" --f90flags="-march=native -Werror"'
+   (Pdb) pp line_args
+   ['--f90flags=-Wall -Wextra', '--f90flags=-march=native -Werror']
+   (Pdb) pp args
+   Namespace(arch=None, compiler=None, debug=False, extra=[], f77flags=None, f90flags=['-Wall -Wextra', '-march=native -Werror'], fcompiler=None, link=[], noarch=False, noopt=False, opt=None, verbosity=0)
+   (Pdb) pp kw
+   ['--f90flags=-Wall -Wextra -march=native -Werror']
    (Pdb) c
 
    In [3]: f(10.5, 1.5)
