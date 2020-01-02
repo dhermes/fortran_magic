@@ -43,7 +43,7 @@ from distutils.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
 
-__version__ = '0.6.1'
+__version__ = '0.6.2.dev1'
 fcompiler.load_all_fcompiler_classes()
 
 
