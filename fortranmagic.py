@@ -101,10 +101,10 @@ class FortranMagics(Magics):
                     See %%f2py_help --compiler"""
         ),
         magic_arguments.argument(
-            '--f90flags', help="Specify F90 compiler flags"
+            '--f90flags', action="append", help="Specify F90 compiler flags"
         ),
         magic_arguments.argument(
-            '--f77flags', help="Specify F77 compiler flags"
+            '--f77flags', action="append", help="Specify F77 compiler flags"
         ),
         magic_arguments.argument(
             '--opt', help="Specify optimization flags"
@@ -332,8 +332,12 @@ class FortranMagics(Magics):
             # py3
             base_str_class = str
 
-        kw = ['--%s=%s' % (k, v) for k, v in vars(args).items()
-              if isinstance(v, base_str_class)]
+        kw = []
+        for k, v in vars(args).items():
+            if isinstance(v, base_str_class):
+                kw.append('--%s=%s' % (k, v))
+            elif isinstance(v, list) and v:
+                kw.append('--%s=%s' % (k, ' '.join(v)))
 
         f2py_args.extend(kw)
 
