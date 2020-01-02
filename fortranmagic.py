@@ -18,7 +18,7 @@ import imp
 import io
 import os
 import sys
-#import subprocess
+import shlex
 from subprocess import Popen, PIPE
 
 import errno
@@ -302,6 +302,9 @@ class FortranMagics(Magics):
 
 
         """
+        # Use `shlex.split()` as a quasi-shell parser (mostly just to strip
+        # quotes in a correct and thorough fashion).
+        line_args = shlex.split(line)
 
         try:
             # custom saved arguments
@@ -321,7 +324,7 @@ class FortranMagics(Magics):
         if '-v' in line:
             self.fortran.parser.set_defaults(verbosity=0)
 
-        args = magic_arguments.parse_argstring(self.fortran, line)
+        args = self.fortran.parser.parse_args(line_args)
 
         # boolean flags
         f2py_args = ['--%s' % k for k, v in vars(args).items() if v is True]
