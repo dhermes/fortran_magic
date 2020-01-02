@@ -57,6 +57,8 @@ then in the test environment invoke ``.venv/bin/ipython``
    -> kw = ['--%s=%s' % (k, v) for k, v in vars(args).items()
    (Pdb) pp args
    Namespace(arch=None, compiler=None, debug=False, extra=[], f77flags=None, f90flags='"-march=native"', fcompiler=None, link=[], noarch=False, noopt=False, opt=None, verbosity=0)
+   (Pdb) pp line
+   '--f90flags="-march=native"'
    (Pdb) c
 
    In [3]: f(10.5, 1.5)
